@@ -1,0 +1,28 @@
+#THEME
+theme = aura 
+# theme = catpuccin-mocha
+# theme = cursor-dark
+# theme = darkmatrix
+# theme = duckbones
+
+#OPACITY
+background-opacity = 0.85
+background-opacity-cells = true
+
+#KEYBINDS
+keybind = shift+cmd+z=close_surface
+
+keybind = shift+cmd+h=new_split:left
+keybind = shift+cmd+j=new_split:down
+keybind = shift+cmd+k=new_split:up
+keybind = shift+cmd+l=new_split:right
+
+keybind = ctrl+h=goto_split:left
+keybind = ctrl+j=goto_split:bottom
+keybind = ctrl+k=goto_split:top
+keybind = ctrl+l=goto_split:right
+
+keybind = shift+cmd+,=reload_config
+
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
