@@ -123,12 +123,18 @@ export VISUAL='nvim'
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # -----------------------------------------------------------------------------
-# Plugin Manager (zinit) - To Be Added in Next Step
+# Plugin Manager (zinit)
 # -----------------------------------------------------------------------------
-# We'll add zinit configuration here for:
-# - zsh-autosuggestions
-# - zsh-syntax-highlighting
-# - zsh-completions
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Essential plugins
+zinit light zsh-users/zsh-autosuggestions    # Fish-like suggestions
+zinit light zsh-users/zsh-syntax-highlighting # Fish-like syntax colors
+zinit light zsh-users/zsh-completions         # Additional completions
+
+# Load completions
+autoload -Uz compinit && compinit
 
 # -----------------------------------------------------------------------------
 # mise (runtime version manager) - Uncomment after installing
