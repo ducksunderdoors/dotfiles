@@ -78,7 +78,10 @@ alias gp='git push'
 alias gl='git log --oneline -20'
 
 # Shortcuts for new tools
-alias top='htop'              # Always use htop
+alias top='htop'              # Always use htop - likely want to chk BTOP
+
+# Local Development Database Connection(Postgres)
+alias pg='pgcli -h localhost -U jeffery -d devdb'
 
 # -----------------------------------------------------------------------------
 # Dotfiles Management (Bare Git Repo)
