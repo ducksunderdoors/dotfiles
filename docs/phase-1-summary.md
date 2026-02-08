@@ -3,19 +3,21 @@
 > **Machine:** 17" MacBook Pro (Apple Silicon M1/M2)
 > **User:** Jeffery Garza (@ducksunderdoors)
 > **Philosophy:** Keyboard-centric, CLI/TUI-first, mastery before experimentation
-> **Phase 1 Completed:** February 7, 2025
+> **Phase 1 Completed:** February 7, 2026
 
 ---
 
 ## What Was Accomplished
 
 ### ✅ Shell Foundation
+
 - **Zsh** configured with sane defaults (history, auto-cd, spell correction)
 - **Starship** prompt installed and active
 - **Emacs-style** keybindings for command line editing (Ctrl-A, Ctrl-E, etc.)
 - **History search** with partial matching (type partial command, arrow up)
 
 ### ✅ CLI Toolkit ("Better Unix")
+
 | Tool | Replaces | Command |
 |------|----------|---------|
 | `eza` | ls | `ls`, `ll`, `la`, `lt` |
@@ -31,11 +33,13 @@
 | `tree` | — | `tree` |
 
 ### ✅ Git & GitHub
-- Git identity configured (Jeffery Garza / jefferyagarza@gmail.com)
+
+- Git identity configured (Jeffery Garza / <jefferyagarza@gmail.com>)
 - SSH key generated (Ed25519) and added to GitHub
 - SSH key backed up in 1Password
 
 ### ✅ Dotfiles Repository
+
 - Bare git repo at `~/.dotfiles`
 - Remote: `git@github.com:ducksunderdoors/dotfiles.git`
 - Currently tracking:
@@ -43,6 +47,7 @@
   - `~/.config/ghostty/config`
 
 ### ✅ Shell Plugins (via zinit)
+
 - `zsh-autosuggestions` — Fish-like ghost suggestions (→ to accept)
 - `zsh-syntax-highlighting` — Valid commands green, invalid red
 - `zsh-completions` — Enhanced tab completions
@@ -83,10 +88,13 @@ dotfiles checkout -- ~/.zshrc
 ```
 
 ### Key Insight
+
 The `dotfiles` command is just `git` with special flags:
+
 ```bash
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 ```
+
 Anything you can do with `git`, you can do with `dotfiles`.
 
 ---
@@ -112,12 +120,14 @@ brew list
 ```
 
 **Formulae:**
+
 - bat, eza, fd, fzf, ripgrep, zoxide, delta
 - jq, yq, tree, htop
 - starship
 - figlet, tlrc (pre-existing)
 
 **Casks:**
+
 - ghostty, aerospace, marta, warp (pre-existing)
 
 ---
@@ -125,6 +135,7 @@ brew list
 ## Key Shortcuts to Practice
 
 ### Shell (Zsh)
+
 | Shortcut | Action |
 |----------|--------|
 | `Ctrl-R` | Fuzzy search command history (fzf) |
@@ -136,6 +147,7 @@ brew list
 | `z <partial>` | Jump to frecent directory |
 
 ### Git/Dotfiles
+
 | Command | Action |
 |---------|--------|
 | `gs` | `git status` |
@@ -149,6 +161,7 @@ brew list
 ## What's Next: Phase 2 (Neovim + LazyVim)
 
 ### Goals
+
 1. Install Neovim
 2. Set up LazyVim (pre-configured Neovim distribution)
 3. Configure LSPs for Python, Go, JavaScript/TypeScript
@@ -156,11 +169,13 @@ brew list
 5. Build vim muscle memory (hjkl, motions, text objects)
 
 ### Philosophy Reminder
+
 - **No AI assistance in Neovim** — Build fundamentals first
 - VSCode/Cursor remain available for "get things done" mode
 - LazyGit will become primary git interface (visual, keyboard-driven)
 
 ### Resources to Bookmark
+
 - [LazyVim for Ambitious Developers](https://lazyvim-ambitious-devs.phillips.codes/)
 - [LazyVim Documentation](https://www.lazyvim.org/)
 - [Vim Cheat Sheet](https://vim.rtorr.com/)
@@ -171,8 +186,8 @@ brew list
 
 | Date | Phase | Accomplishments |
 |------|-------|-----------------|
-| Feb 6, 2025 | 1 | Initial setup: zshrc, CLI tools, Starship, git/SSH, dotfiles repo |
-| Feb 7, 2025 | 1 | Fixed zinit config, completed Phase 1 |
+| Feb 6, 2026 | 1 | Initial setup: zshrc, CLI tools, Starship, git/SSH, dotfiles repo |
+| Feb 7, 2026 | 1 | Fixed zinit config, completed Phase 1 |
 | | 2 | *Next: Neovim + LazyVim* |
 
 ---
