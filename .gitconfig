@@ -1,0 +1,18 @@
+[user]
+	name = Jeffery Garza
+  email = jefferyagarza@gmail.com
+
+[core]
+  pager = delta
+  excludesfile = ~/.gitignore_global
+
+[delta]
+  navigation = true
+  side-by-side = true
+  line-numbers = true
+
+[merge]
+  conflictstyle = diff3
+
+[diff]
+  colorMoved = default
