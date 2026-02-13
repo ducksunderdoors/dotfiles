@@ -14,6 +14,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # Add local bin for user scripts
 export PATH="$HOME/.local/bin:$PATH"
 
+# GOPATH (~/go/bin)
+export PATH="$HOME/go/bin:$PATH"
+
 # -----------------------------------------------------------------------------
 # History Configuration
 # -----------------------------------------------------------------------------
