@@ -1,0 +1,74 @@
+# =============================================================================
+# WORKMUX - Global Config
+# =============================================================================
+# Philosophy: one git worktree + one tmux window per agent task
+# Per-repo overrides: <repo>/.workmux.yaml (template in ~/docs/agentic-tmux/templates)
+# All options: `workmux config reference`
+# =============================================================================
+
+nerdfont: true
+mode: window                    # sesh owns sessions (projects); workmux owns windows (tasks)
+window_prefix: 'wm-'
+base_branch: auto               # branch from main/master, not whatever is checked out
+merge_strategy: rebase          # linear history on `workmux merge`
+worktree_dir: '~/.workmux/{project}'   # keeps ~/code clean for zoxide + sesh
+
+# -----------------------------------------------------------------------------
+# Status icons — tmux.conf places these in the window list itself
+# -----------------------------------------------------------------------------
+status_format: false
+status_icons:
+  working: '🤖'
+  waiting: '💬'
+  done: '✅'
+
+# -----------------------------------------------------------------------------
+# Agents
+# -----------------------------------------------------------------------------
+agent: claude
+agents:
+  cc: 'claude'
+  cod: 'codex'
+  # Only with sandboxing on — see guide §8
+  # cc-yolo: 'claude --dangerously-skip-permissions'
+  # cod-yolo: 'codex --yolo'
+
+# Default window: agent left (65%), shell right
+panes:
+  - command: <agent>
+    focus: true
+  - split: horizontal
+    percentage: 35
+
+layouts:
+  # Same prompt, Claude vs Codex side by side: `workmux add spike -l duel -p "..."`
+  # Two agents at once is the ceiling on an 8 GB Air.
+  duel:
+    panes:
+      - command: <agent:cc>
+        focus: true
+      - command: <agent:cod>
+        split: horizontal
+  review:
+    panes:
+      - command: <agent>
+        focus: true
+      - command: lazygit
+        split: horizontal
+
+# -----------------------------------------------------------------------------
+# Files every new worktree needs (gitignored, so git won't bring them)
+# -----------------------------------------------------------------------------
+files:
+  copy:
+    - .env
+    - .env.local
+  symlink:
+    - .claude/settings.local.json   # approve a Claude permission once, every worktree gets it
+
+sidebar:
+  position: left
+  layout: compact
+
+auto_name:
+  background: true

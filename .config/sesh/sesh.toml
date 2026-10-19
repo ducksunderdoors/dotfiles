@@ -1,0 +1,54 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+# =============================================================================
+# SESH - Session Manager Config
+# =============================================================================
+# Philosophy: one tmux session per project; zoxide decides what's "recent"
+# Picker: prefix T (fzf popup) | Ctrl-G from any shell
+# =============================================================================
+
+# floax's floating pane lives in a session named "scratch"
+blacklist = ["scratch"]
+
+sort_order = [
+  "tmux",                 # live sessions pinned on top
+  ["config", "zoxide"],   # then everything else by how often you go there
+]
+
+[tui]
+show_icons = true
+show_windows = true       # shows wm-* agent windows under each project
+group_separator = true
+
+[default_session]
+preview_command = "eza --all --git --icons --color=always --group-directories-first {}"
+
+# -----------------------------------------------------------------------------
+# Every repo under ~/code
+# -----------------------------------------------------------------------------
+[[wildcard]]
+pattern = "~/code/*"
+icon = ""
+
+# -----------------------------------------------------------------------------
+# Named sessions — type the alias in the picker to jump straight there
+# -----------------------------------------------------------------------------
+[[session]]
+name = "tasks"
+path = "~"
+alias = "t"
+alias_auto_connect = true
+icon = "󰄲"
+startup_command = "aven"
+
+[[session]]
+name = "dotfiles"
+path = "~"
+alias = "dot"
+icon = ""
+startup_command = "lazydotfiles"
+
+[[session]]
+name = "learning-go"
+path = "~/code/learning-go"
+alias = "go"
+icon = ""

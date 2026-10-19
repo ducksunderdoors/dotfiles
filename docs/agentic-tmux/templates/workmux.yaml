@@ -1,0 +1,33 @@
+# <repo>/.workmux.yaml — copy into a repo and trim. Project values override global.
+# Not sharing with teammates? Add it to .git/info/exclude instead of committing.
+
+post_create:
+  - '<global>'
+  # - mise trust && mise install
+  # - direnv allow
+
+files:
+  copy:
+    - '<global>'
+  symlink:
+    - '<global>'
+
+# Go (learning-go etc.): agent left, test watcher right
+# panes:
+#   - command: <agent>
+#     focus: true
+#   - command: go test ./... ; exec $SHELL
+#     split: horizontal
+#     percentage: 35
+
+# Node/pnpm: install in a pane so the window opens instantly
+# panes:
+#   - command: <agent>
+#     focus: true
+#   - command: pnpm install && pnpm dev
+#     split: horizontal
+#     percentage: 35
+
+# Gate `workmux merge` on checks
+# pre_merge:
+#   - go vet ./... && go test ./...

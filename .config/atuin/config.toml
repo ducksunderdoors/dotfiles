@@ -1,0 +1,21 @@
+# =============================================================================
+# ATUIN - Shell History
+# =============================================================================
+# Ctrl-R opens atuin. ↑ stays your zsh prefix search (.zshrc passes
+# --disable-up-arrow). Sync is off: personal and work history stay apart.
+# =============================================================================
+
+style = "compact"
+inline_height = 20
+show_preview = true
+search_mode = "fuzzy"
+filter_mode = "global"
+workspaces = true                 # adds a "this git repo" filter; cycle filters with Ctrl-R
+enter_accept = false              # Enter drops the command on the line to edit first
+secrets_filter = true
+
+history_filter = [
+  "^ls$", "^ll$", "^clear$", "^exit$",
+]
+
+auto_sync = false

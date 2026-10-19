@@ -1,5 +1,5 @@
 #THEME
-theme = aura 
+theme = aura
 # theme = catpuccin-mocha
 # theme = cursor-dark
 # theme = darkmatrix
@@ -17,12 +17,18 @@ keybind = shift+cmd+j=new_split:down
 keybind = shift+cmd+k=new_split:up
 keybind = shift+cmd+l=new_split:right
 
-keybind = ctrl+h=goto_split:left
-keybind = ctrl+j=goto_split:bottom
-keybind = ctrl+k=goto_split:top
-keybind = ctrl+l=goto_split:right
+# performable: Ghostty only takes ctrl+hjkl when there's a Ghostty split to move to.
+# Otherwise the key passes through to tmux (vim-tmux-navigator) and Neovim.
+keybind = performable:ctrl+h=goto_split:left
+keybind = performable:ctrl+j=goto_split:bottom
+keybind = performable:ctrl+k=goto_split:top
+keybind = performable:ctrl+l=goto_split:right
 
 keybind = shift+cmd+,=reload_config
 
 keybind = global:cmd+grave_accent=toggle_quick_terminal
 
+#TMUX
+# Uncomment to land in tmux on every new window/tab. Left off so the quick
+# terminal stays a plain throwaway shell.
+# command = /opt/homebrew/bin/tmux new-session -A -s main

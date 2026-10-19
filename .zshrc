@@ -139,6 +139,9 @@ zinit light zsh-users/zsh-autosuggestions    # Fish-like suggestions
 zinit light zsh-users/zsh-syntax-highlighting # Fish-like syntax colors
 zinit light zsh-users/zsh-completions         # Additional completions
 
+# Generated completions for workmux / sesh / aven (see ~/.local/bin/agentic-setup)
+fpath=(~/.zsh/completions $fpath)
+
 # Load completions
 autoload -Uz compinit && compinit
 
@@ -146,6 +149,55 @@ autoload -Uz compinit && compinit
 # mise (runtime version manager) - Uncomment after installing
 # -----------------------------------------------------------------------------
 eval "$(mise activate zsh)"
+
+# =============================================================================
+# AGENTIC STACK (tmux + sesh + workmux + aven + atuin)
+# =============================================================================
+# Guide: ~/docs/agentic-tmux/guide.md
+
+# -----------------------------------------------------------------------------
+# atuin — takes over Ctrl-R from fzf; ↑ keeps your prefix-match history search
+# -----------------------------------------------------------------------------
+if command -v atuin >/dev/null; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
+# -----------------------------------------------------------------------------
+# workmux — git worktree + tmux window per agent
+# -----------------------------------------------------------------------------
+alias wm='workmux'
+alias wma='workmux add'                   # wma oauth -p "Work on HFL-7KQ9 ..."
+alias wmA='workmux add -A -p'             # wmA "Add pagination"  (branch auto-named)
+alias wml='workmux list'
+alias wmd='workmux dashboard'
+alias wmm='workmux merge'
+alias wmr='workmux remove'
+alias wmo='workmux open'
+wmcd() { cd "$(workmux path "$1")"; }     # jump this shell into a worktree
+
+# -----------------------------------------------------------------------------
+# aven — tasks
+# -----------------------------------------------------------------------------
+alias av='aven'
+alias ava='aven add'
+
+# -----------------------------------------------------------------------------
+# sesh — Ctrl-G picks a session from any prompt, in or out of tmux
+# -----------------------------------------------------------------------------
+# (Alt-s belongs to AeroSpace workspace S, so this uses Ctrl-G)
+function sesh-sessions() {
+  {
+    exec </dev/tty
+    exec <&1
+    local session
+    session=$(sesh list -t -c -z | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
+    zle reset-prompt > /dev/null 2>&1 || true
+    [[ -z "$session" ]] && return
+    sesh connect "$session"
+  }
+}
+zle -N sesh-sessions
+bindkey '^G' sesh-sessions
 
 # -----------------------------------------------------------------------------
 # Local Overrides

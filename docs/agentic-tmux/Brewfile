@@ -1,0 +1,24 @@
+# =============================================================================
+# BREWFILE - Agentic tmux stack (additions on top of Phase 1-3 tools)
+# =============================================================================
+# brew bundle --file=~/docs/agentic-tmux/Brewfile
+# Already-installed items are skipped.
+# =============================================================================
+
+# Session + worktree layer
+brew "tmux"
+brew "sesh"
+brew "raine/workmux/workmux"
+brew "raine/aven/aven"          # skip on the work MBP until you decide (guide §9)
+brew "atuin"
+
+# Already in your stack — listed so a fresh machine gets them too
+brew "zoxide"
+brew "fzf"
+brew "fd"
+brew "eza"
+brew "bat"
+brew "git-delta"                # workmux dashboard patch mode uses it
+brew "lazygit"
+brew "gh"                       # workmux add --pr / list --pr
+brew "jq"

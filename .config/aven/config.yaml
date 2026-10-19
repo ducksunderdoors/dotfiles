@@ -1,0 +1,37 @@
+# =============================================================================
+# AVEN - Task Manager Config
+# =============================================================================
+# Inspect what aven resolved for the current dir: `aven doctor`
+# =============================================================================
+
+local:
+  inline_images: "on"          # previews through tmux (allow-passthrough is on)
+  image_optimization: paste
+
+workspace:
+  default: "personal"
+  # Work MacBook Pro only — see guide §9 before enabling:
+  # routes:
+  #   - workspace: "work"
+  #     paths: ["~/work"]
+
+# Only when a checkout dir name differs from the project you want in refs
+# project:
+#   overrides:
+#     - project: "hackfluence"
+#       paths: ["~/code/hackfluence", "~/.workmux/hackfluence"]
+
+sync:
+  enabled: false               # flip on after `aven sync setup` (guide §6)
+
+tui:
+  table:
+    compact_status: true       # reads better in a tmux popup on a 13" screen
+    columns: [ref, title, labels, metadata, project, status, priority, due, time]
+
+# Natural-language capture uses Claude
+agent:
+  task_intake:
+    command: "claude"
+    args: ["-p", "--no-session-persistence", "--bare", "{prompt}"]
+    timeout_seconds: 45

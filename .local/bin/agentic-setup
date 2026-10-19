@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# =============================================================================
+# AGENTIC-SETUP - one-time / idempotent setup for the tmux + agents stack
+# =============================================================================
+# The configs themselves arrive via `dotfiles pull` (bare repo). This script
+# installs what those configs depend on. Safe to re-run.
+#
+#   agentic-setup --check     read-only: report what's there, change nothing
+#   agentic-setup             install + wire everything up
+#   agentic-setup --minimal   same, minus aven (work MacBook Pro)
+# =============================================================================
+set -uo pipefail
+
+MODE="${1:-install}"
+BREWFILE="$HOME/docs/agentic-tmux/Brewfile"
+TPM="$HOME/.tmux/plugins/tpm"
+
+say()  { printf '\n\033[1;35m==>\033[0m %s\n' "$*"; }
+ok()   { printf '  \033[32m✓\033[0m %s\n' "$*"; }
+miss() { printf '  \033[33m·\033[0m %s\n' "$*"; }
+
+# -----------------------------------------------------------------------------
+# Check (read-only)
+# -----------------------------------------------------------------------------
+check() {
+  say "Machine"
+  echo "  $(sw_vers -productName) $(sw_vers -productVersion) · $(sysctl -n machdep.cpu.brand_string) · $(( $(sysctl -n hw.memsize) / 1073741824 )) GB RAM"
+
+  say "Tools"
+  for t in tmux sesh workmux aven atuin zoxide fzf fd eza bat delta lazygit gh claude codex; do
+    if command -v "$t" >/dev/null; then ok "$t  $("$t" --version 2>/dev/null | head -1)"; else miss "$t  (missing)"; fi
+  done
+  [[ -d /Applications/Ghostty.app ]] && ok "ghostty $(/Applications/Ghostty.app/Contents/MacOS/ghostty +version 2>/dev/null | awk '/Version/{print $2; exit}')"
+
+  say "tmux"
+  [[ -d "$TPM" ]] && ok "TPM installed" || miss "TPM not installed"
+  tmux ls 2>/dev/null | sed 's/^/  session: /' || miss "no tmux server running"
+
+  say "Dotfiles"
+  /usr/bin/git --git-dir="$HOME/.dotfiles" --work-tree="$HOME" status -sb 2>/dev/null | sed 's/^/  /'
+
+  say "Where your repos live (zoxide top 10)"
+  zoxide query -l 2>/dev/null | head -10 | sed 's/^/  /'
+
+  say "Agent configs"
+  for d in ~/.claude ~/.codex ~/.claude-personal; do [[ -e $d ]] && ok "$d" || miss "$d"; done
+}
+
+if [[ "$MODE" == "--check" ]]; then check; exit 0; fi
+
+# -----------------------------------------------------------------------------
+# Install
+# -----------------------------------------------------------------------------
+command -v brew >/dev/null || { echo "Homebrew missing"; exit 1; }
+
+say "brew bundle"
+if [[ "$MODE" == "--minimal" ]]; then
+  grep -v 'raine/aven' "$BREWFILE" | brew bundle --file=-
+else
+  brew bundle --file="$BREWFILE"
+fi
+
+say "TPM + tmux plugins"
+[[ -d "$TPM" ]] || git clone --depth 1 https://github.com/tmux-plugins/tpm "$TPM"
+"$TPM/bin/install_plugins" || miss "open tmux and press prefix + I"
+
+say "Shell completions"
+mkdir -p "$HOME/.zsh/completions"
+workmux completions zsh > "$HOME/.zsh/completions/_workmux"
+sesh completion zsh    > "$HOME/.zsh/completions/_sesh"
+ok "written to ~/.zsh/completions"
+
+say "atuin: import existing zsh history"
+atuin import zsh >/dev/null 2>&1 && ok "imported" || miss "skipped"
+
+say "zoxide: seed ~/code/* so sesh lists them"
+for d in "$HOME"/code/*/; do [[ -d "$d" ]] && zoxide add "$d"; done
+ok "done"
+
+if [[ -n "${TMUX:-}" ]]; then tmux source-file ~/.tmux.conf && ok "tmux config reloaded"; fi
+
+cat <<'EOF'
+
+Next — these ask you questions, so run them yourself:
+  workmux setup         status hooks (🤖/💬/✅) + /worktree skill for Claude Code & Codex
+  aven skill install    teach Claude Code & Codex to use aven
+  aven demo             learn the TUI on throwaway data
+EOF
