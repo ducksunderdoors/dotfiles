@@ -12,7 +12,7 @@
 
 | Layer | Tool | One of these per… |
 |-------|------|-------------------|
-| Desktop | AeroSpace (+ Sketchybar) | app (Ghostty lives on its own workspace) |
+| Desktop | OmniWM (see `~/docs/omniwm-setup.md`) | app (Ghostty lives on workspace 1) |
 | Terminal | Ghostty | — |
 | Session | **sesh** | project / repo |
 | Window | **workmux** | task = git worktree + agent |
@@ -50,6 +50,9 @@ Ghostty
 | `~/.config/aven/config.yaml` | New |
 | `~/.config/atuin/config.toml` | New |
 | `~/.local/bin/agentic-setup` | New — installs dependencies, `--check` is read-only |
+| `~/.config/aerospace/` | Removed — replaced by OmniWM |
+| `~/.config/omniwm/tune.conf` + `~/.local/bin/omniwm-tune` | New — OmniWM keybindings tuned to AeroSpace muscle memory |
+| `~/docs/omniwm-setup.md` | New — OmniWM install, tuning, rollback |
 | `~/docs/agentic-tmux/` | This guide, Brewfile, templates |
 
 ### Keybinding conflicts resolved
@@ -58,7 +61,7 @@ Ghostty
 |--------|-------------|------------|
 | floax on `prefix p` | previous-window | floax on **`prefix f`** / menu `prefix F` |
 | sesh last on `prefix L` | your resize-right | **`prefix b`** (back) |
-| sesh widget on `Alt-s` | AeroSpace workspace S | **`Ctrl-G`** |
+| sesh widget on `Alt-s` | Option chords belong to the window manager | **`Ctrl-G`** |
 | Ghostty `ctrl+hjkl` | vim-tmux-navigator | `performable:` — Ghostty acts only when it has a split to move to |
 | catppuccin theme | your Ghostty `aura` theme | hand-written Aura status line, `bg=default` so the 0.85 opacity shows through |
 
@@ -85,6 +88,8 @@ aven demo
 ```
 
 If TPM plugins didn't install, press **`prefix I`** inside tmux.
+
+Window manager: AeroSpace is replaced by OmniWM — follow `~/docs/omniwm-setup.md` (needs macOS 26+; `agentic-setup --check` tells you).
 
 Agents, if missing:
 
@@ -261,6 +266,7 @@ Decide before going further:
         CLAUDE_CONFIG_DIR: ~/.claude-work
   ```
 - **Git identity.** Your `includeIf "gitdir:~/work/"` covers worktrees only if they live under `~/work/` — set `worktree_dir: '~/work/.workmux/{project}'` on the MBP.
+- **Window manager.** OmniWM is a resident app with Accessibility + Input Monitoring access — check it's allowed on work hardware before installing. If not, the terminal stack works the same without it.
 - **Sandbox.** The MBP has the RAM for `sandbox.enabled: true` with OrbStack — that's when the yolo profiles become reasonable.
 
 ---
@@ -294,4 +300,5 @@ Or `lazydotfiles` and stage visually.
 | Date | Accomplishments |
 |------|-----------------|
 | Oct 19, 2026 | Designed stack; merged into existing dotfiles; Air test bed |
+| Oct 19, 2026 | Swapped AeroSpace (+ Sketchybar indicator, borders) for OmniWM |
 | | *Next: first week on the Air, then §9 on the MBP* |

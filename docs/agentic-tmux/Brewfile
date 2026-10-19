@@ -12,6 +12,9 @@ brew "raine/workmux/workmux"
 brew "raine/aven/aven"          # skip on the work MBP until you decide (guide §9)
 brew "atuin"
 
+# Window manager (replaces AeroSpace; needs macOS 26+). See ~/docs/omniwm-setup.md
+cask "omniwm"
+
 # Already in your stack — listed so a fresh machine gets them too
 brew "zoxide"
 brew "fzf"

@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+# =============================================================================
+# OMNIWM-TUNE - apply ~/.config/omniwm/tune.conf to OmniWM's settings.toml
+# =============================================================================
+# OmniWM's settings.toml is strict: a missing key or duplicate hotkey id
+# rejects the whole file. So this never adds or removes anything — it only
+# rewrites values that already exist, which is what the docs recommend.
+#
+#   omniwm-tune            dry run: show what would change
+#   omniwm-tune --apply    back up settings.toml, then write (OmniWM live-reloads)
+#
+# tune.conf lines:
+#   bind <hotkey-id> <binding>        bind focus.left Option+H
+#   set  <table.key> <toml-value>     set quakeTerminal.enabled false
+# =============================================================================
+import os, re, shutil, sys, time
+from pathlib import Path
+
+cfg_home = os.environ.get("XDG_CONFIG_HOME", "")
+base = Path(cfg_home) if cfg_home.startswith("/") else Path.home() / ".config"
+SETTINGS = base / "omniwm" / "settings.toml"
+TUNE = base / "omniwm" / "tune.conf"
+APPLY = "--apply" in sys.argv
+
+
+def die(msg):
+    print(f"omniwm-tune: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+if not SETTINGS.exists():
+    die(f"{SETTINGS} not found — launch OmniWM once so it writes the file")
+if not TUNE.exists():
+    die(f"{TUNE} not found")
+
+binds, sets = {}, []
+for n, raw in enumerate(TUNE.read_text().splitlines(), 1):
+    line = raw.split("#", 1)[0].strip()
+    if not line:
+        continue
+    parts = line.split(None, 2)
+    if len(parts) != 3 or parts[0] not in ("bind", "set"):
+        die(f"tune.conf line {n}: expected 'bind <id> <binding>' or 'set <table.key> <value>'")
+    verb, key, val = parts
+    if verb == "bind":
+        binds[key] = val
+    else:
+        sets.append((key, val))
+
+lines = SETTINGS.read_text().splitlines(keepends=True)
+
+# --- map each [[hotkeys]] block: id -> (binding line index, current binding)
+hotkeys, cur_header, block = {}, None, {}
+
+
+def close_block():
+    if cur_header == "[[hotkeys]]" and "id" in block and "binding" in block:
+        hotkeys[block["id"][1]] = block["binding"]
+
+
+kv = re.compile(r'^\s*([A-Za-z0-9_]+)\s*=\s*"(.*)"\s*$')
+for i, l in enumerate(lines):
+    s = l.strip()
+    if s.startswith("["):
+        close_block()
+        cur_header, block = s, {}
+        continue
+    m = kv.match(l)
+    if m and cur_header == "[[hotkeys]]" and m.group(1) in ("id", "binding"):
+        block[m.group(1)] = (i, m.group(2))
+close_block()
+
+changes = []
+
+# --- hotkeys
+unknown = [k for k in binds if k not in hotkeys]
+if unknown:
+    die("unknown hotkey id(s) in tune.conf: " + ", ".join(unknown))
+
+final = {hid: binds.get(hid, cur) for hid, (_, cur) in hotkeys.items()}
+for hid, b in binds.items():
+    if b == "Unassigned":
+        continue
+    clash = [o for o, ob in final.items() if ob == b and o != hid]
+    if clash:
+        die(f"'{b}' (for {hid}) is already bound to {', '.join(clash)} — "
+            f"add 'bind {clash[0]} Unassigned' or pick another key in tune.conf")
+
+for hid, new in binds.items():
+    idx, cur = hotkeys[hid]
+    if cur != new:
+        lines[idx] = re.sub(r'"(.*)"', f'"{new}"', lines[idx], count=1)
+        changes.append(f"bind {hid}: {cur} -> {new}")
+
+# --- scalar settings
+for dotted, val in sets:
+    table, _, key = dotted.rpartition(".")
+    if not table:
+        die(f"set {dotted}: use table.key")
+    header, found = f"[{table}]", False
+    in_table = False
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if s.startswith("["):
+            in_table = s == header
+            continue
+        if in_table:
+            m = re.match(rf'^(\s*{re.escape(key)}\s*=\s*)(.*?)(\s*)$', l)
+            if m:
+                found = True
+                if m.group(2) != val:
+                    changes.append(f"set {dotted}: {m.group(2)} -> {val}")
+                    lines[i] = f"{m.group(1)}{val}\n"
+                break
+    if not found:
+        die(f"set {dotted}: key not present in settings.toml (this tool never adds keys)")
+
+if not changes:
+    print("settings.toml already matches tune.conf")
+    sys.exit(0)
+
+print("\n".join(changes))
+if not APPLY:
+    print("\n(dry run — re-run with --apply to write)")
+    sys.exit(0)
+
+backup = SETTINGS.with_name(f"settings.toml.bak-{time.strftime('%Y%m%d-%H%M%S')}")
+shutil.copy2(SETTINGS, backup)
+SETTINGS.write_text("".join(lines))
+print(f"\nwrote {SETTINGS}\nbackup {backup}\nOmniWM reloads on save — check its Diagnostics if anything looks off.")

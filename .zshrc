@@ -184,7 +184,7 @@ alias ava='aven add'
 # -----------------------------------------------------------------------------
 # sesh — Ctrl-G picks a session from any prompt, in or out of tmux
 # -----------------------------------------------------------------------------
-# (Alt-s belongs to AeroSpace workspace S, so this uses Ctrl-G)
+# (Ctrl-G rather than Alt-s: Option chords belong to the window manager)
 function sesh-sessions() {
   {
     exec </dev/tty

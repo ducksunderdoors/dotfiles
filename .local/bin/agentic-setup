@@ -26,8 +26,15 @@ check() {
   say "Machine"
   echo "  $(sw_vers -productName) $(sw_vers -productVersion) · $(sysctl -n machdep.cpu.brand_string) · $(( $(sysctl -n hw.memsize) / 1073741824 )) GB RAM"
 
+  say "Window manager"
+  if [[ "$(sw_vers -productVersion | cut -d. -f1)" -ge 26 ]]; then ok "macOS 26+ (OmniWM supported)"; else miss "macOS < 26 — OmniWM needs Tahoe; stay on AeroSpace for now"; fi
+  for p in AeroSpace OmniWM sketchybar borders; do
+    pgrep -xq "$p" && ok "$p running" || miss "$p not running"
+  done
+  [[ -d /Applications/AeroSpace.app ]] && miss "AeroSpace.app still installed"
+
   say "Tools"
-  for t in tmux sesh workmux aven atuin zoxide fzf fd eza bat delta lazygit gh claude codex; do
+  for t in tmux sesh workmux aven atuin zoxide fzf fd eza bat delta lazygit gh claude codex omniwmctl; do
     if command -v "$t" >/dev/null; then ok "$t  $("$t" --version 2>/dev/null | head -1)"; else miss "$t  (missing)"; fi
   done
   [[ -d /Applications/Ghostty.app ]] && ok "ghostty $(/Applications/Ghostty.app/Contents/MacOS/ghostty +version 2>/dev/null | awk '/Version/{print $2; exit}')"
